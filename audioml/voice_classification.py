@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pickle
 import pandas as pd
 
-DATA_PATH = "/home/bilbo/dev/python/DeepLearningForAudioWithPython/data/speakers/speakers_10.json"
+DATA_PATH = "/home/bilbo/dev/python/audio_ml/speakers_10.json"
 
 
 def load_data(data_path):
