@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pickle
 import pandas as pd
 
-DATA_PATH = "/home/bilbo/dev/python/audio_ml/speakers_10.json"
+DATA_PATH = "/home/bilbo/dev/python/audio_ml/audioml/data/speakers_10.json"
 
 
 def load_data(data_path):
@@ -101,8 +101,20 @@ def build_model(input_shape):
 
     return model
 
+def get_preds(y_pred):
+    preds = []
+    for i in range(0,len(y_pred)):
+        max_p = -1
+        max_i = -1
+        for index, prob in enumerate(y_pred[i]):
+            if prob > max_p:
+                max_p = prob
+                max_i = index
+        preds.append(max_i)
+    return preds
 
-if __name__ == "__main__":
+
+def train(best_score):
 
     # get train, validation, test splits
     X_train, X_validation, X_test, y_train, y_validation, y_test = prepare_datasets(0.25, 0.2)
@@ -131,19 +143,24 @@ if __name__ == "__main__":
     # evaluate model on test set
     test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
     print('\nTest accuracy:', test_acc)
+    if test_acc > best_score:
+        best_score = test_acc
+        print("saving model")
+        pickle.dump(model, open('./data/classification.model', 'wb'))
+        pickle.dump(y_test, open('./data/y_test', 'wb'))
+        pickle.dump(X_test, open('./data/X_test', 'wb'))
     
-    print("saving model")
-    pickle.dump(model, open('classification.model', 'wb'))
-    pickle.dump(y_test, open('y_test', 'wb'))
-    pickle.dump(X_test, open('X_test', 'wb'))
     
-    
-    y_pred = pd.Series(model.predict(X_test))
+        y_pred = model.predict(X_test)
+        y_preds = get_preds(y_pred)
+        cr = classification_report(y_test, y_preds)
+        print(cr)
+        print("Accuracy:", metrics.accuracy_score(y_test, y_preds))
+        print("Precision:", metrics.precision_score(y_test, y_preds,average='macro'))
+        print("Recall:", metrics.recall_score(y_test, y_preds, average='macro'))
 
-    cr = classification_report(y_test, y_pred)
-    print(cr)
-    print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
-    print("Precision:", metrics.precision_score(y_test, y_pred))
-    print("Recall:", metrics.recall_score(y_test, y_pred))
-
     
+if __name__ == "__main__":
+    best_score = 0
+    for i in range(0,10):
+        train(best_score)

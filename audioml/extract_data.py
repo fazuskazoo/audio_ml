@@ -4,8 +4,8 @@ import math
 import librosa
 # kaggle.com/datasets/carlthome/gtzan-genr-collection
 
-DATASET_PATH = "/home/bilbo/dev/audio_samples/audio_classes"
-JSON_PATH = "speakers_10.json"
+DATASET_PATH = "/home/bilbo/dev/audio_classes"
+JSON_PATH = "data/speakers_10.json"
 SAMPLE_RATE = 22050
 TRACK_DURATION = 30 # measured in seconds
 SAMPLES_PER_TRACK = SAMPLE_RATE * TRACK_DURATION
