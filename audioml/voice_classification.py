@@ -4,9 +4,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn import metrics
 import tensorflow.keras as keras
+from tensorflow.keras.utils import plot_model
 import matplotlib.pyplot as plt
 import pickle
 import pandas as pd
+import sys
 
 DATA_PATH = "/home/bilbo/dev/python/audio_ml/audioml/data/speakers_10.json"
 
@@ -77,6 +79,17 @@ def prepare_datasets(test_size, validation_size):
 
     return X_train, X_validation, X_test, y_train, y_validation, y_test
 
+def show_model(model):
+    print("show model")
+
+    plot_model(model,
+    to_file='model.png',
+    show_shapes=True,
+    show_dtype=True,
+    show_layer_names=True,
+    expand_nested=False,
+    rankdir='TB')
+
 
 def build_model(input_shape):
     """Generates RNN-LSTM model
@@ -93,6 +106,9 @@ def build_model(input_shape):
     model.add(keras.layers.LSTM(64))
 
     # dense layer
+    model.add(keras.layers.Dense(64, activation='relu'))
+    model.add(keras.layers.Dropout(0.3))
+     # dense layer
     model.add(keras.layers.Dense(64, activation='relu'))
     model.add(keras.layers.Dropout(0.3))
 
@@ -115,6 +131,7 @@ def get_preds(y_pred):
 
 
 def train(best_score):
+    
 
     # get train, validation, test splits
     X_train, X_validation, X_test, y_train, y_validation, y_test = prepare_datasets(0.25, 0.2)
@@ -125,6 +142,8 @@ def train(best_score):
     # create network
     input_shape = (X_train.shape[1], X_train.shape[2]) # 130, 13
     model = build_model(input_shape)
+    #show_model(model)
+    
 
     # compile model
     optimiser = keras.optimizers.Adam(learning_rate=0.0001)
@@ -135,7 +154,7 @@ def train(best_score):
     model.summary()
 
     # train model
-    history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), batch_size=32, epochs=30)
+    history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), batch_size=32, epochs=300)
  
     # plot accuracy/error for training and validation
     plot_history(history)
@@ -159,8 +178,11 @@ def train(best_score):
         print("Precision:", metrics.precision_score(y_test, y_preds,average='macro'))
         print("Recall:", metrics.recall_score(y_test, y_preds, average='macro'))
 
+    return best_score
+
     
 if __name__ == "__main__":
     best_score = 0
-    for i in range(0,10):
-        train(best_score)
+    #for i in range(0,25):
+    best_score = train(best_score)
+    print(f"trainng --- best score so far -- {best_score}")
