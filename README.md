@@ -1,7 +1,7 @@
 # audio_ml
 
 ## Voice Recognizion
-## Inspired by: Deep Learning for [Audio by Valerio]([https://www.youtube.com/watch?v=fMqL5vckiU0&list=PL-wATfeyAMNrtbkCNsLcpoAyBBRJZVlnf) 
+## Inspired by: Deep Learning for [Audio by Valerio]([https://www.youtube.com/watch?v=fMqL5vckiU0&list=PL-wATfeyAMNrtbkCNsLcpoAyBBRJZVlnf)
 
 
 ```
