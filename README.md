@@ -1,4 +1,9 @@
 # audio_ml
 
-## Brilliant project from Piero Paialunga
-https://towardsdatascience.com/voice-classification-using-deep-learning-with-python-6eddb9580381
+## Voice Recognizion
+## Inspired by: Deep Learning for Audio by Valerio
+```
+Each track have multiple MFCC vectors ... keras.layers.Flattten(
+            input.shape[1] (the number of mfcc vectors, 
+            input.shape[2] the number of mfccs ( 13)
+```
