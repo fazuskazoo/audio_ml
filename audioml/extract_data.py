@@ -2,14 +2,12 @@ import json
 import os
 import math
 import librosa
-# kaggle.com/datasets/carlthome/gtzan-genr-collection
 
-DATASET_PATH = "/home/bilbo/dev/audio_classes"
-JSON_PATH = "data/speakers_10.json"
+DATASET_PATH = "/home/bilbo/dev/audio_classes_2"
+JSON_PATH = "data_2.json"
 SAMPLE_RATE = 22050
 TRACK_DURATION = 30 # measured in seconds
 SAMPLES_PER_TRACK = SAMPLE_RATE * TRACK_DURATION
-
 
 
 def save_mfcc(dataset_path, json_path, num_mfcc=13, n_fft=2048, hop_length=512, num_segments=5):
@@ -26,7 +24,6 @@ def save_mfcc(dataset_path, json_path, num_mfcc=13, n_fft=2048, hop_length=512, 
 
     # dictionary to store mapping, labels, and MFCCs
     data = {
-        "source":[],
         "mapping": [],
         "labels": [],
         "mfcc": []
@@ -49,7 +46,7 @@ def save_mfcc(dataset_path, json_path, num_mfcc=13, n_fft=2048, hop_length=512, 
             # process all audio files in genre sub-dir
             for f in filenames:
 
-		# load audio file
+		        # load audio file
                 file_path = os.path.join(dirpath, f)
                 signal, sample_rate = librosa.load(file_path, sr=SAMPLE_RATE)
 
@@ -61,12 +58,11 @@ def save_mfcc(dataset_path, json_path, num_mfcc=13, n_fft=2048, hop_length=512, 
                     finish = start + samples_per_segment
 
                     # extract mfcc
-                    mfcc = librosa.feature.mfcc(y=signal[start:finish], sr=sample_rate, n_mfcc=num_mfcc, n_fft=n_fft, hop_length=hop_length)
+                    mfcc = librosa.feature.mfcc(signal[start:finish], sample_rate, n_mfcc=num_mfcc, n_fft=n_fft, hop_length=hop_length)
                     mfcc = mfcc.T
 
                     # store only mfcc feature with expected number of vectors
                     if len(mfcc) == num_mfcc_vectors_per_segment:
-                        data['source'].append(file_path)
                         data["mfcc"].append(mfcc.tolist())
                         data["labels"].append(i-1)
                         print("{}, segment:{}".format(file_path, d+1))

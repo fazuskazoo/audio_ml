@@ -10,7 +10,7 @@ import pickle
 import pandas as pd
 import sys
 
-DATA_PATH = "/home/bilbo/dev/python/audio_ml/audioml/data/speakers_10.json"
+DATA_PATH = "/home/bilbo/dev/python/audio_ml/audioml/data/speakers_1.json"
 
 
 def load_data(data_path):
@@ -80,8 +80,7 @@ def prepare_datasets(test_size, validation_size):
     return X_train, X_validation, X_test, y_train, y_validation, y_test
 
 def show_model(model):
-    print("show model")
-
+    """
     plot_model(model,
     to_file='model.png',
     show_shapes=True,
@@ -89,6 +88,20 @@ def show_model(model):
     show_layer_names=True,
     expand_nested=False,
     rankdir='TB')
+    """
+    plot_model(
+    model,
+    to_file='model.png',
+    show_shapes=True,
+    show_dtype=False,
+    show_layer_names=True,
+    rankdir='TB',
+    expand_nested=False,
+    dpi=96,
+    layer_range=None,
+    show_layer_activations=True,
+    show_trainable=False
+    )
 
 
 def build_model(input_shape):
@@ -108,13 +121,11 @@ def build_model(input_shape):
     # dense layer
     model.add(keras.layers.Dense(64, activation='relu'))
     model.add(keras.layers.Dropout(0.3))
-     # dense layer
-    model.add(keras.layers.Dense(64, activation='relu'))
-    model.add(keras.layers.Dropout(0.3))
 
     # output layer
-    model.add(keras.layers.Dense(10, activation='softmax'))
+    model.add(keras.layers.Dense(5, activation='softmax'))
 
+    print(model.summary())
     return model
 
 def get_preds(y_pred):
@@ -142,10 +153,10 @@ def train(best_score):
     # create network
     input_shape = (X_train.shape[1], X_train.shape[2]) # 130, 13
     model = build_model(input_shape)
-    #show_model(model)
+    show_model(model)
     
 
-    # compile model
+    # compile modelshow_
     optimiser = keras.optimizers.Adam(learning_rate=0.0001)
     model.compile(optimizer=optimiser,
                   loss='sparse_categorical_crossentropy',
@@ -154,22 +165,18 @@ def train(best_score):
     model.summary()
 
     # train model
-    history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), batch_size=32, epochs=300)
+    history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), batch_size=32, epochs=100)
  
-    # plot accuracy/error for training and validation
-    plot_history(history)
-
     # evaluate model on test set
     test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
     print('\nTest accuracy:', test_acc)
     if test_acc > best_score:
-        best_score = test_acc
-        print("saving model")
-        pickle.dump(model, open('./data/classification.model', 'wb'))
-        pickle.dump(y_test, open('./data/y_test', 'wb'))
-        pickle.dump(X_test, open('./data/X_test', 'wb'))
-    
-    
+        
+        best_score = test_acc        
+        pickle.dump(model, open('/home/bilbo/dev/python/audio_ml/audioml/data/classification.model', 'wb'))
+        pickle.dump(y_test, open('/home/bilbo/dev/python/audio_ml/audioml/data/y_test', 'wb'))
+        pickle.dump(X_test, open('/home/bilbo/dev/python/audio_ml/audioml/data/X_test', 'wb'))
+        
         y_pred = model.predict(X_test)
         y_preds = get_preds(y_pred)
         cr = classification_report(y_test, y_preds)
@@ -178,11 +185,14 @@ def train(best_score):
         print("Precision:", metrics.precision_score(y_test, y_preds,average='macro'))
         print("Recall:", metrics.recall_score(y_test, y_preds, average='macro'))
 
+        # plot accuracy/error for training and validation
+        #plot_history(history)
+
     return best_score
 
     
 if __name__ == "__main__":
     best_score = 0
-    #for i in range(0,25):
-    best_score = train(best_score)
+    for i in range(0,10):
+        best_score = train(best_score)
     print(f"trainng --- best score so far -- {best_score}")
