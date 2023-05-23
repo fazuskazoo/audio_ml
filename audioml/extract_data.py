@@ -3,8 +3,8 @@ import os
 import math
 import librosa
 
-DATASET_PATH = "/home/bilbo/dev/audio_classes_2"
-JSON_PATH = "data_2.json"
+DATASET_PATH = "/home/bilbo/dev/audio_classes_11"
+JSON_PATH = "data_11.json"
 SAMPLE_RATE = 22050
 TRACK_DURATION = 30 # measured in seconds
 SAMPLES_PER_TRACK = SAMPLE_RATE * TRACK_DURATION
@@ -33,13 +33,20 @@ def save_mfcc(dataset_path, json_path, num_mfcc=13, n_fft=2048, hop_length=512, 
     num_mfcc_vectors_per_segment = math.ceil(samples_per_segment / hop_length)
 
     # loop through all genre sub-folder
-    for i, (dirpath, dirnames, filenames) in enumerate(os.walk(dataset_path)):
+    dirs = os.listdir(dataset_path)
+    dirs.sort()  # joe_biden is a0001, so he will be the first, and therfore index 0
+
+    #for i, (dirpath, dirnames, filenames) in enumerate(os.walk(dataset_path)):
+    for i, dir in enumerate(dirs):
+        dirpath = os.path.join(dataset_path,dir)
+        filenames = os.listdir(dirpath)
 
         # ensure we're processing a genre sub-folder level
         if dirpath is not dataset_path:
 
             # save genre label (i.e., sub-folder name) in the mapping
             semantic_label = dirpath.split("/")[-1]
+  
             data["mapping"].append(semantic_label)
             print("\nProcessing: {}".format(semantic_label))
 
@@ -64,7 +71,7 @@ def save_mfcc(dataset_path, json_path, num_mfcc=13, n_fft=2048, hop_length=512, 
                     # store only mfcc feature with expected number of vectors
                     if len(mfcc) == num_mfcc_vectors_per_segment:
                         data["mfcc"].append(mfcc.tolist())
-                        data["labels"].append(i-1)
+                        data["labels"].append(i)
                         print("{}, segment:{}".format(file_path, d+1))
 
     # save MFCCs to json file

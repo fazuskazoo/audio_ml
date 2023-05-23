@@ -24,20 +24,25 @@ def get_preds(y_pred):
         preds.append(max_i)
     return preds
 
-model = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/classification.model', 'rb'))
-y_test = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/y_test', 'rb'))
-X_test = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/X_test', 'rb'))
-y_pred = model.predict(X_test)
+def evaluate_model():
+    model = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/classification.model', 'rb'))
+    y_test = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/y_test', 'rb'))
+    X_test = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/X_test', 'rb'))
+    y_pred = model.predict(X_test)
 
-y_preds = get_preds(y_pred)
+    y_preds = get_preds(y_pred)
 
-cr = classification_report(y_test, y_preds)
+    cr = classification_report(y_test, y_preds)
 
-print(cr)
+    print(cr)
 
-cf = confusion_matrix(y_test, y_preds)
-print(cf)
+    cf = confusion_matrix(y_test, y_preds)
+    print(cf)
 
-print("Accuracy:", metrics.accuracy_score(y_test, y_preds))
-print("Precision:", metrics.precision_score(y_test, y_preds,average='macro'))
-print("Recall:", metrics.recall_score(y_test, y_preds,average='macro'))
+    print("Accuracy:", metrics.accuracy_score(y_test, y_preds))
+    print("Precision:", metrics.precision_score(y_test, y_preds,average='macro'))
+    print("Recall:", metrics.recall_score(y_test, y_preds,average='macro'))
+
+
+if __name__ == "__main__":
+    evaluate_model()

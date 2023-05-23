@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import pickle
 import pandas as pd
 import sys
+import evaluate
 
 DATA_PATH = "/home/bilbo/dev/python/audio_ml/audioml/data/speakers_1.json"
 
@@ -123,7 +124,7 @@ def build_model(input_shape):
     model.add(keras.layers.Dropout(0.3))
 
     # output layer
-    model.add(keras.layers.Dense(5, activation='softmax'))
+    model.add(keras.layers.Dense(11, activation='softmax'))  # the number is the number of categories
 
     print(model.summary())
     return model
@@ -187,12 +188,15 @@ def train(best_score):
 
         # plot accuracy/error for training and validation
         #plot_history(history)
-
     return best_score
 
     
 if __name__ == "__main__":
+    
+
     best_score = 0
     for i in range(0,10):
-        best_score = train(best_score)
-    print(f"trainng --- best score so far -- {best_score}")
+        best_score = train(best_score)   
+        print(f"trainng --- best score so far -- {best_score}")
+        evaluate.evaluate_model()
+    
