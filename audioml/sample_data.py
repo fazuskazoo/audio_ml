@@ -3,8 +3,8 @@ import os
 import math
 import librosa
 
-DATASET_PATH = "/home/bilbo/dev/audio_classes_11"
-JSON_PATH = "data_11.json"
+DATASET_PATH = "/home/bilbo/dev/misc_audio/inagural/"
+JSON_PATH = "/home/bilbo/dev/misc_audio/inagural/inagural.json"
 SAMPLE_RATE = 22050
 TRACK_DURATION = 30 # measured in seconds
 SAMPLES_PER_TRACK = SAMPLE_RATE * TRACK_DURATION
@@ -75,8 +75,8 @@ def save_mfcc(dataset_path, json_path, num_mfcc=13, n_fft=2048, hop_length=512, 
                         print("{}, segment:{}".format(file_path, d+1))
 
     # save MFCCs to json file
-    #with open(json_path, "w") as fp:
-    #    json.dump(data, fp, indent=4)
+    with open(json_path, "w") as fp:
+        json.dump(data, fp, indent=4)
         
         
 if __name__ == "__main__":
