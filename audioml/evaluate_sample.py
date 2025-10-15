@@ -26,8 +26,8 @@ def get_preds(y_pred, confidence):
     return preds
 
 def evaluate_model():
-    model = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/joebiden.model', 'rb'))
-    #model = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/classification_1.model', 'rb'))
+    #model = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/joebiden.model', 'rb'))
+    model = pickle.load(open('/home/bilbo/dev/python/audio_ml/audioml/data/classification_11.model', 'rb'))
     #model.input_shape=(None,1,13)
     y_test = pickle.load(open('/home/bilbo/dev/misc_audio/inagural/y_test', 'rb'))
     X_test = pickle.load(open('/home/bilbo/dev/misc_audio/inagural/X_test', 'rb'))
