@@ -3,14 +3,15 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn import metrics
-import tensorflow.keras as keras
-from tensorflow.keras.utils import plot_model
+import tensorflow as tf
+ 
+
 import matplotlib.pyplot as plt
 import pickle
 import pandas as pd
 import sys
 
-DATA_PATH = "/home/bilbo/dev/python/audio_ml/audioml/data/speakers_1.json"
+DATA_PATH = "/home/bilbo/dev/python/audio_ml/audioml/data_2.json"
 
 
 def load_data(data_path):
@@ -89,7 +90,7 @@ def show_model(model):
     expand_nested=False,
     rankdir='TB')
     """
-    plot_model(
+    tf.keras.utils.plot_model(
     model,
     to_file='model.png',
     show_shapes=True,
@@ -99,8 +100,7 @@ def show_model(model):
     expand_nested=False,
     dpi=96,
     layer_range=None,
-    show_layer_activations=True,
-    show_trainable=False
+    show_layer_activations=True,    
     )
 
 
@@ -112,18 +112,18 @@ def build_model(input_shape):
     """
 
     # build network topology
-    model = keras.Sequential()
+    model = tf.keras.Sequential()
 
     # 2 LSTM layers
-    model.add(keras.layers.LSTM(64, input_shape=input_shape, return_sequences=True))
-    model.add(keras.layers.LSTM(64))
+    model.add(tf.keras.layers.LSTM(64, input_shape=input_shape, return_sequences=True))
+    model.add(tf.keras.layers.LSTM(64))
 
     # dense layer
-    model.add(keras.layers.Dense(64, activation='relu'))
-    model.add(keras.layers.Dropout(0.3))
+    model.add(tf.keras.layers.Dense(64, activation='relu'))
+    model.add(tf.keras.layers.Dropout(0.3))
 
     # output layer
-    model.add(keras.layers.Dense(5, activation='softmax'))
+    model.add(tf.keras.layers.Dense(5, activation='softmax'))
 
     print(model.summary())
     return model
@@ -157,7 +157,7 @@ def train(best_score):
     
 
     # compile modelshow_
-    optimiser = keras.optimizers.Adam(learning_rate=0.0001)
+    optimiser = tf.keras.optimizers.Adam(learning_rate=0.0001)
     model.compile(optimizer=optimiser,
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy'])
@@ -193,6 +193,6 @@ def train(best_score):
     
 if __name__ == "__main__":
     best_score = 0
-    for i in range(0,10):
-        best_score = train(best_score)
+    #for i in range(0,10):
+    best_score = train(best_score)
     print(f"trainng --- best score so far -- {best_score}")
